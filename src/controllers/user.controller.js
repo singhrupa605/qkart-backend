@@ -39,8 +39,22 @@ const { userService } = require("../services");
  *
  */
 const getUser = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  console.log("************** GET USER *********************")
+  try {
+    const userData = await userService.getUserById(userId);
+    if (userData)
+    {
+      res.status(200).json(userData);
+    }
+    else {
+      throw new ApiError(httpStatus[404],   'User not found');
+    }
+  } catch (err)
+  {
+    res.send(err)
+  }
 });
-
 
 module.exports = {
   getUser,
