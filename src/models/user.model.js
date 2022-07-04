@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       default : config.default_wallet_money
     },
-    address: {
+    address: { 
       type: String,
       default: config.default_address,
     },
@@ -79,4 +79,7 @@ userSchema.statics.isEmailTaken = async function (email)
  */
   
 const User = mongoose.model('User', userSchema);
-module.exports = { User };
+// module.exports = { User };
+
+// module.exports = { User: User };
+module.exports.User = User;

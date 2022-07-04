@@ -38,6 +38,7 @@ const { userService } = require("../services");
  * @returns {User | {address: String}}
  *
  */
+
 const getUser = catchAsync(async (req, res) => {
   const { userId } = req.params;
   console.log("************** GET USER *********************")
