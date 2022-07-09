@@ -31,8 +31,16 @@ const { authService, userService, tokenService } = require("../services");
  *}
  *
  */
+
 const register = catchAsync(async (req, res) => {
+  const user = await userService.createUser(req.body);
+  const tokens = await tokenService.generateAuthTokens(user);
+  res.status(httpStatus.CREATED).send({
+    user,
+    tokens,
+  });
 });
+
 
 /**
  * Perform the following steps:
@@ -64,7 +72,15 @@ const register = catchAsync(async (req, res) => {
  *
  */
 const login = catchAsync(async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const user = await authService.loginUserWithEmailAndPassword(email,password);
+  const tokens = await tokenService.generateAuthTokens(user);
+  res.status(httpStatus.OK).send({
+    user,tokens
+  })
 });
+
 
 module.exports = {
   register,

@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 // NOTE - "validator" external library and not the custom middleware at src/middlewares/validate.js
 const validator = require("validator");
 const config = require("../config/config");
+const bcrypt = require("bcryptjs");
+
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Complete userSchema, a Mongoose schema for "users" collection
 const userSchema = new mongoose.Schema(
@@ -17,12 +19,19 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       lowercase: true,
-      validate : (value)=>validator.isEmail(value)
+      validate: (value) => {
+        //this validates email using extranal lib using validator
+        if (validator.isEmail(value)) return true;
+        throw new Error("Invalid email");
+      },
     },
     password: {
       type: String,
       trim: true,
       required: true,
+      trim: true,
+      minlength : 8,
+
       validate(value) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
           throw new Error(
@@ -39,6 +48,7 @@ const userSchema = new mongoose.Schema(
     address: { 
       type: String,
       default: config.default_address,
+      trim : false,
     },
   },
   // Create createdAt and updatedAt fields automatically
@@ -55,16 +65,15 @@ const userSchema = new mongoose.Schema(
  */
 userSchema.statics.isEmailTaken = async function (email)
 {
-  const data = await this.find({ email: email });
-    console.log(data);
-   if(data.length)
-    {
-      return true;
-   }
-   else {
-     return false;
-  }
+  const data = await this.findOne({email});
+  return !!data;
 };
+
+userSchema.methods.isPasswordMatch = async function (password) {
+  const user = this;
+  return bcrypt.compare(password, user.password);
+};
+
 
 
 
@@ -79,7 +88,4 @@ userSchema.statics.isEmailTaken = async function (email)
  */
   
 const User = mongoose.model('User', userSchema);
-// module.exports = { User };
-
-// module.exports = { User: User };
 module.exports.User = User;

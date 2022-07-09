@@ -13,7 +13,7 @@ const bcrypt = require("bcryptjs");
 
 const getUserById = async (id) =>
 {
-  console.log("************ SERVICES ****************")
+  // console.log("************ SERVICES ****************")
   try {
     const user = await User.findById(id)
     return user;
@@ -68,13 +68,14 @@ const getUserByEmail = async (email) =>
 
 const createUser = async (user) =>
 {
-  if(User.isEmailTaken(user.email))
+  if(await User.isEmailTaken(user.email))
   {
-    throw new ApiError(httpStatus[200], "Email already taken");
-  } else {
-    const newUserData = await User.create(user);
-    return newUserData;
+    throw new ApiError(httpStatus.OK, "Email already taken");
   }
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(user.password, salt);
+  const newUser = await User.create({ ...user, password: hashedPassword });
+  return newUser;
 };
 
 

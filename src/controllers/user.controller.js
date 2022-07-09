@@ -44,22 +44,21 @@ const { userService } = require("../services");
  */
 
 const getUser = catchAsync(async (req, res) => {
-  const { userId } = req.params;
-  console.log("************** GET USER *********************")
-  try {
-    const userData = await userService.getUserById(userId);
-    if (userData)
-    {
-      res.status(200).json(userData);
-    }
-    else {
-      throw new ApiError(httpStatus[404],   'User not found');
-    }
-  } catch (err)
-  {
-    res.send(err)
+  data = await userService.getUserById(req.params.userId);
+  if (!data) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
+
+  if (data.email !== req.user.email) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "User not authorized to view some other user's data"
+    );
+  }
+
+  res.status(200).send(data);
 });
+
 
 module.exports = {
   getUser,
