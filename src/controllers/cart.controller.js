@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
 const { cartService } = require("../services");
+const ApiError = require("../utils/ApiError");
 
 /**
  * Fetch the cart details
@@ -47,7 +48,9 @@ const addProductToCart = catchAsync(async (req, res) => {
     req.body.productId,
     req.body.quantity
   );
-
+  if (req.body.quantity < 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "please enter a valid quantity");
+  }
   res.status(httpStatus.CREATED).send(cart);
 });
 
@@ -77,11 +80,16 @@ const updateProductInCart = catchAsync(async (req, res) => {
     res.send(updatedCart).status(httpStatus.OK);
   }
   if (req.body.quantity == 0) {
-     await cartService.deleteProductFromCart(
+    await cartService.deleteProductFromCart
+      (
       req.user,
       req.body.productId
     );
       res.sendStatus(httpStatus.NO_CONTENT);
+  }
+  if (req.body.quantity < 0)
+  {
+       throw new ApiError(httpStatus.BAD_REQUEST, "please enter a valid quantity")
   }
 });
 
