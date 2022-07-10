@@ -28,7 +28,7 @@ specifiers:
   jsonwebtoken: ^8.5.1
   mockingoose: ~2.13.2
   moment: ^2.29.1
-  mongoose: ^5.13.14
+  mongoose: ^5.10.9
   morgan: ^1.9.1
   node-mocks-http: ^1.8.0
   nodemon: ^2.0.7

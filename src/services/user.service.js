@@ -1,7 +1,7 @@
-const { User }  = require("../models/user.model")
 const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const bcrypt = require("bcryptjs");
+const { User } = require("../models");
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserById(id)
 /**
@@ -11,16 +11,12 @@ const bcrypt = require("bcryptjs");
  * @returns {Promise<User>}
  */
 
-const getUserById = async (id) =>
-{
-  // console.log("************ SERVICES ****************")
+const getUserById = async (id) => {
   try {
-    const user = await User.findById(id)
+    const user = await User.findById(id);
     return user;
-  }
-  catch (err)
-  {
-    console.log(err);
+  } catch (err) {
+    return err;
   }
 };
 
@@ -31,14 +27,11 @@ const getUserById = async (id) =>
  * @param {string} email
  * @returns {Promise<User>}
  */
-const getUserByEmail = async (email) =>
-{
+const getUserByEmail = async (email) => {
   try {
     const user = await User.findOne({ email: email });
     return user;
-  }
-  catch (err)
-  {
+  } catch (err) {
     console.log(err);
   }
 };
@@ -66,10 +59,8 @@ const getUserByEmail = async (email) =>
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
 
-const createUser = async (user) =>
-{
-  if(await User.isEmailTaken(user.email))
-  {
+const createUser = async (user) => {
+  if (await User.isEmailTaken(user.email)) {
     throw new ApiError(httpStatus.OK, "Email already taken");
   }
   const salt = await bcrypt.genSalt();
@@ -78,7 +69,39 @@ const createUser = async (user) =>
   return newUser;
 };
 
+// TODO: CRIO_TASK_MODULE_CART - Implement getUserAddressById()
+/**
+ * Get subset of user's data by id
+ * - Should fetch from Mongo only the email and address fields for the user apart from the id
+ *
+ * @param {ObjectId} id
+ * @returns {Promise<User>}
+ */
+const getUserAddressById = async (id) => {
+  const userData = await User.findOne({ _id: id }, { email: 1, address: 1 });
+  return {
+    _id: userData._id,
+    email: userData.email,
+    address: userData.address,
+  };
+};
 
+/**
+ * Set user's shipping address
+ * @param {String} email
+ * @returns {String}
+ */
+const setAddress = async (user, newAddress) => {
+  user.address = newAddress;
+  await user.save();
 
+  return user.address;
+};
 
-module.exports = {getUserById, getUserByEmail, createUser}
+module.exports = {
+  getUserById,
+  getUserByEmail,
+  createUser,
+  getUserAddressById,
+  setAddress,
+};
