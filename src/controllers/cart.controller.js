@@ -80,16 +80,27 @@ const updateProductInCart = catchAsync(async (req, res) => {
     res.send(updatedCart).status(httpStatus.OK);
   }
   if (req.body.quantity == 0) {
-    await cartService.deleteProductFromCart
-      (
-      req.user,
-      req.body.productId
-    );
-      res.sendStatus(httpStatus.NO_CONTENT);
+    await cartService.deleteProductFromCart(req.user, req.body.productId);
+    res.sendStatus(httpStatus.NO_CONTENT);
   }
-  if (req.body.quantity < 0)
-  {
-       throw new ApiError(httpStatus.BAD_REQUEST, "please enter a valid quantity")
+  if (req.body.quantity < 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "please enter a valid quantity");
+  }
+
+  res.status(httpStatus.CREATED).send(cart);
+});
+
+/**
+ * Checkout user's cart
+ */
+const checkout = catchAsync(async (req, res) => {
+  const cart = await cartService.checkout(req.user);
+
+  if (cart && cart.cartItems.length === 0) {
+    
+    res.status(httpStatus.NO_CONTENT).send(cart);
+  } else {
+    res.sendStatus(httpStatus.BAD_REQUEST);
   }
 });
 
@@ -97,4 +108,5 @@ module.exports = {
   getCart,
   addProductToCart,
   updateProductInCart,
+  checkout,
 };

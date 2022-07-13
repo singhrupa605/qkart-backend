@@ -76,7 +76,10 @@ userSchema.methods.isPasswordMatch = async function (password) {
 };
 
 
-
+userSchema.methods.hasSetNonDefaultAddress = async function () {
+  const user = this;
+   return user.address !== config.default_address; 
+};
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS
 /*
