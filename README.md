@@ -1,2 +1,1 @@
-# qkart-frontend
 # qkart-backend
