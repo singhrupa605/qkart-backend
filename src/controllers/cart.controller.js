@@ -10,7 +10,7 @@ const ApiError = require("../utils/ApiError");
  * HTTP 200 OK
  * {
  *  "_id": "5f82eebd2b11f6979231653f",
- *  "email": "crio-user@gmail.com",
+ *  "email": "user@gmail.com",
  *  "cartItems": [
  *      {
  *          "_id": "5f8feede75b0cc037b1bce9d",
@@ -54,7 +54,6 @@ const addProductToCart = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(cart);
 });
 
-// TODO: CRIO_TASK_MODULE_CART - Implement updateProductInCart()
 /**
  * Update product quantity in cart
  * - If updated quantity > 0,

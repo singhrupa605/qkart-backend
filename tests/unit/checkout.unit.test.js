@@ -23,7 +23,6 @@ describe("Cart test", () => {
       // Mock Cart model to return `null` as output to `Cart.findOne()` call
       mockingoose(Cart).toReturn(null, "findOne");
       const res = cartService.checkout(userOne);
-      // TODO: CRIO_TASK_MODULE_TEST - Assert if
       /* - ApiError is thrown
        * - the "statusCode" field of response is "404 NOT FOUND"
        *
@@ -45,7 +44,6 @@ describe("Cart test", () => {
       // Mock Cart model to return `emptyCart` object as output to `Cart.findOne()` call
       mockingoose(Cart).toReturn(emptyCart, "findOne");
       const res = cartService.checkout(userOne);
-      // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
       expect(res).rejects.toThrow(ApiError);
@@ -63,7 +61,6 @@ describe("Cart test", () => {
       userTwo.hasSetNonDefaultAddress =
         hasSetNonDefaultAddressMock.mockReturnValue(false);
       const res = cartService.checkout(userTwo);
-      // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
       expect(res).rejects.toThrow(ApiError);
@@ -81,7 +78,6 @@ describe("Cart test", () => {
       userOneWithZeroBalance.hasSetNonDefaultAddress =
         hasSetNonDefaultAddressMock.mockReturnValue(true);
       const res = cartService.checkout(userOneWithZeroBalance);
-      // TODO: CRIO_TASK_MODULE_TEST - Assert if
       // - ApiError is thrown
       // - the "statusCode" field of response is "400 BAD REQUEST"
       expect(res).rejects.toThrow(ApiError);
@@ -112,7 +108,6 @@ describe("Cart test", () => {
       await cartService.checkout(userOneFinal);
       // Assert User model's hasSetNonDefaultAddress() instance method was called
       expect(hasSetNonDefaultAddressMock.mock.calls.length).not.toBe(0);
-      // TODO: CRIO_TASK_MODULE_TEST - Assert that the wallet balance of user was reduced
       expect(userOneFinal.walletMoney).not.toBe(userOne.walletMoney);
       //  expect(true).toEqual(false);
     });

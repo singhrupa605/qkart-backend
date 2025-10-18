@@ -5,7 +5,6 @@ const config = require("../config/config");
 const bcrypt = require("bcryptjs");
 
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Complete userSchema, a Mongoose schema for "users" collection
 
 const userSchema = mongoose.Schema(
   {
@@ -57,8 +56,6 @@ const userSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement the isEmailTaken() static method
 /**
  * Check if email is taken
  * @param {string} email - The user's email
@@ -81,7 +78,6 @@ userSchema.methods.hasSetNonDefaultAddress = async function () {
    return user.address !== config.default_address; 
 };
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS
 /*
  * Create a Mongoose model out of userSchema and export the model as "User"
  * Note: The model should be accessible in a different module when imported like below

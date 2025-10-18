@@ -3,8 +3,6 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { userService } = require("../services");
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUser() function
-// TODO: CRIO_TASK_MODULE_CART - Update function to process url with query params
 /**
  * Get user details
  *  - Use service layer to get User data
@@ -28,9 +26,9 @@ const { userService } = require("../services");
  *     "walletMoney": 500,
  *     "address": "ADDRESS_NOT_SET",
  *     "_id": "6010008e6c3477697e8eaba3",
- *     "name": "crio-users",
- *     "email": "crio-user@gmail.com",
- *     "password": "criouser123",
+ *     "name": "users",
+ *     "email": "user@gmail.com",
+ *     "password": "user123",
  *     "createdAt": "2021-01-26T11:44:14.544Z",
  *     "updatedAt": "2021-01-26T11:44:14.544Z",
  *     "__v": 0
