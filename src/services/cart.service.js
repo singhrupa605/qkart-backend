@@ -4,8 +4,6 @@ const ApiError = require("../utils/ApiError");
 const config = require("../config/config");
 const { use } = require("passport");
 
-// TODO: CRIO_TASK_MODULE_CART - Implement the Cart service methods
-
 /**
  * Fetches cart for a user
  * - Fetch user's cart from Mongo
@@ -106,7 +104,7 @@ const addProductToCart = async (user, productId, quantity) => {
  * @param {User} user
  * @param {string} productId
  * @param {number} quantity
- * @returns {Promise<Cart>
+ * @returns {Promise<Cart>}
  * @throws {ApiError}
  */
 const updateProductInCart = async (user, productId, quantity) => {
@@ -175,7 +173,6 @@ const deleteProductFromCart = async (user, productId) => {
   return userCart;
 };
 
-// TODO: CRIO_TASK_MODULE_TEST - Implement checkout function
 /**
  * Checkout a users cart.
  * On success, users cart must have no products.
@@ -214,10 +211,32 @@ const checkout = async (user) => {
   return await userCart.save();
 };
 
+/**
+ * Clear a users cart.
+ * On success, users cart must be empty.
+ *
+ * @param {User} user
+ * @returns {Promise}
+ * @throws {ApiError} when cart is invalid
+ */
+
+const clearCart = async (user) => {
+  const userCart = await Cart.findOne({ email: user.email });
+  if (!userCart) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User does not have a cart");
+  }
+  if (!userCart.cartItems.length) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "User cart is empty");
+  }
+  userCart.cartItems = [];
+  return await userCart.save();
+};
+
 module.exports = {
   getCartByUser,
   addProductToCart,
   updateProductInCart,
   deleteProductFromCart,
   checkout,
+  clearCart
 };

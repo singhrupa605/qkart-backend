@@ -2,7 +2,8 @@ const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { productService } = require("../services");
-
+const path = require("path");
+const fs = require("fs");
 /**
  * Get product by productId
  *
@@ -58,7 +59,21 @@ const getProductById = catchAsync(async (req, res) => {
  */
 const getProducts = catchAsync(async (req, res) => {
   const products = await productService.getProducts();
-  res.send(products);
+
+  return res.send(products);
+
+  // const filePath = path.join(__dirname, "../data/export_qkart_products.json");
+  // const jsonData = fs.readFileSync(filePath, "utf-8");
+  // const defaultProds = jsonData
+  //   .split("\n")
+  //   .filter((line) => line.trim() !== "")
+  //   .map((line) => {
+  //     const json = JSON.parse(line);
+  //     return {
+  //       ...json,
+  //       _id: json._id.$oid || json._id,
+  //     };
+  //   });
 });
 
 module.exports = {

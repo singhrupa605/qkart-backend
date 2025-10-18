@@ -2,9 +2,7 @@ import { Input, message } from "antd";
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { config } from "../App";
-
 import Cart from "./Cart";
-
 import Header from "./Header";
 import Product from "./Product";
 import { Row, Col } from "antd";
@@ -207,8 +205,7 @@ class Search extends React.Component {
    *      -   Update `filteredProducts` state variable with a clone of `products`
    */
   getProducts = async () => {
-    const response = await this.performAPICall();
-
+    const response =  await this.performAPICall();
     if (response) {
       this.products = response;
       this.setState({
@@ -240,9 +237,9 @@ class Search extends React.Component {
    * @returns {JSX}
    *    HTML and JSX to be rendered
    */
-  getProductElement = (product) => {
+  getProductElement = (product,index) => {
     return (
-      <Col xs={24} sm={12} xl={6} key={product._id}>
+      <Col xs={24} sm={12} xl={6} key={product._id + index}>
         <Product
           product={product}
           addToCart={() => {
@@ -289,8 +286,8 @@ class Search extends React.Component {
               {/* Display each product item wrapped in a Col component */}
               <Row>
                 {this.products.length !== 0 ? (
-                  this.state.filteredProducts.map((product) =>
-                    this.getProductElement(product)
+                  this.state.filteredProducts.map((product, index) =>
+                    this.getProductElement(product, index)
                   )
                 ) : this.state.loading ? (
                   <div className="loading-text">Loading products...</div>

@@ -94,13 +94,22 @@ const updateProductInCart = catchAsync(async (req, res) => {
  */
 const checkout = catchAsync(async (req, res) => {
   const cart = await cartService.checkout(req.user);
-
   if (cart && cart.cartItems.length === 0) {
-    
     res.status(httpStatus.NO_CONTENT).send(cart);
   } else {
     res.sendStatus(httpStatus.BAD_REQUEST);
   }
+});
+
+//clear User's cart
+
+const clearCart = catchAsync(async (req, res) => {
+  const response = await cartService.clearCart(req.user);
+
+  return res.status(httpStatus.OK).send({
+    success: true,
+    message: response.message,
+  });
 });
 
 module.exports = {
@@ -108,4 +117,5 @@ module.exports = {
   addProductToCart,
   updateProductInCart,
   checkout,
+  clearCart
 };

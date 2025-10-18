@@ -1,4 +1,4 @@
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, ClearOutlined } from "@ant-design/icons";
 import { Button, Card, message, Spin, InputNumber } from "antd";
 import React from "react";
 import { config } from "../App";
@@ -38,6 +38,7 @@ import "./Cart.css";
  * @property {boolean} state.loading
  *    Indicates background action pending completion. When true, further UI actions might be blocked
  */
+
 export default class Cart extends React.Component {
   constructor() {
     super();
@@ -125,12 +126,13 @@ export default class Cart extends React.Component {
       response = await (
         await fetch(`${config.endpoint}/cart`, {
           method: "GET",
-
           headers: {
             Authorization: `Bearer ${this.props.token}`,
+            "Content-Type": "application/json",
           },
         })
       ).json();
+      console.log(response);
     } catch (e) {
       errored = true;
     }
@@ -179,6 +181,7 @@ export default class Cart extends React.Component {
    * }
    */
   postToCart = async (productId, qty) => {
+    console.log(productId);
     let response = {};
     let errored = false;
     let statusCode;
@@ -265,6 +268,29 @@ export default class Cart extends React.Component {
    *      -   Redirect the user to the products listing page
    
    */
+
+  clearCart = async () => {
+    try {
+      const res = await fetch(`${config.endpoint}/cart/clear`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${this.props.token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const resData = await res.json();
+      if (res.ok) {
+        message.success(resData.message || "Cart cleared successfully");
+        await this.refreshCart();
+      } else {
+        message.error(resData.message || "Failed to clear cart");
+      }
+    } catch (err) {
+      console.error("Clear cart error:", err);
+      message.error("Could not clear cart. Please try again later.");
+    }
+  };
+
   refreshCart = async () => {
     const cart = await this.getCart();
     if (cart && cart.cartItems) {
@@ -348,8 +374,8 @@ export default class Cart extends React.Component {
         {this.state.items.length ? (
           <>
             {/* Display a card view for each product in the cart */}
-            {this.state.items.map((item) => (
-              <Card className="cart-item" key={item.productId}>
+            {this.state.items.map((item, index) => (
+              <Card className="cart-item" key={item.productId + index}>
                 {/* Display product image */}
                 <img
                   className="cart-item-image"
@@ -427,22 +453,34 @@ export default class Cart extends React.Component {
 
         {/* Display a "Checkout" button */}
 
-        {!this.props.checkout && (
-          <Button
-            className="ant-btn-warning"
-            type="primary"
-            icon={<ShoppingCartOutlined />}
-            onClick={() => {
-              if (this.state.items.length) {
-                this.props.history.push("/checkout");
-              } else {
-                message.error("You must add items to cart first");
-              }
-            }}
-          >
-            <strong> Checkout</strong>
-          </Button>
-        )}
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          {!this.props.checkout && (
+            <Button
+              className="ant-btn-warning"
+              type="primary"
+              icon={<ShoppingCartOutlined />}
+              onClick={() => {
+                if (this.state.items.length) {
+                  this.props.history.push("/checkout");
+                } else {
+                  message.error("You must add items to cart first");
+                }
+              }}
+            >
+              <strong> Checkout</strong>
+            </Button>
+          )}
+          {this.state.items.length ? (
+            <Button
+              className="ant-btn-warning"
+              type="primary"
+              icon={<ClearOutlined />}
+              onClick={() => this.clearCart()}
+            >
+              <strong> Clear Cart</strong>
+            </Button>
+          ) : null}
+        </div>
 
         {/* Display a loading icon if the "loading" state variable is true */}
         {this.state.loading && (
