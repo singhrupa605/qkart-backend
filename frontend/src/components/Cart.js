@@ -132,7 +132,6 @@ export default class Cart extends React.Component {
           },
         })
       ).json();
-      console.log(response);
     } catch (e) {
       errored = true;
     }
@@ -181,7 +180,7 @@ export default class Cart extends React.Component {
    * }
    */
   postToCart = async (productId, qty) => {
-    console.log(productId);
+
     let response = {};
     let errored = false;
     let statusCode;
@@ -286,7 +285,7 @@ export default class Cart extends React.Component {
         message.error(resData.message || "Failed to clear cart");
       }
     } catch (err) {
-      console.error("Clear cart error:", err);
+    
       message.error("Could not clear cart. Please try again later.");
     }
   };
